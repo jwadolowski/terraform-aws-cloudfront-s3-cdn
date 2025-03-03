@@ -13,7 +13,7 @@ variable "functions" {
 
   `source_zip` contains path to zip file with lambda source.
 
-  `runtime`, `handler`, `memory_size` and `timeout` correspond to the attributes of the same name in the [lambda_function](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function)
+  `runtime`, `handler`, `memory_size`, `environment` and `timeout` correspond to the attributes of the same name in the [lambda_function](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function)
   resource. See [here](https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/lambda-at-edge-function-restrictions.html) for Lambda@Edge function restrictions.
 
   `additional_policy` contains additional IAM policies for Lambda@Edge function. It's possible to override default policy statement by providing your own statement with `LambdaWriteCloudWatchLogs` sid.
@@ -34,8 +34,11 @@ variable "functions" {
     memory_size       = optional(number, 128)
     timeout           = optional(number, 3)
     additional_policy = optional(string, "{}")
-    event_type        = string
-    include_body      = bool
+    environment = optional(object({
+      variables = map(string)
+    }))
+    event_type   = string
+    include_body = bool
   }))
 
   validation {
