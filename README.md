@@ -392,7 +392,7 @@ module "cdn" {
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.3 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.9 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.13.0 |
 | <a name="requirement_random"></a> [random](#requirement\_random) | >= 2.2 |
 | <a name="requirement_time"></a> [time](#requirement\_time) | >= 0.7 |
 
@@ -400,7 +400,7 @@ module "cdn" {
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.9 |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.13.0 |
 | <a name="provider_random"></a> [random](#provider\_random) | >= 2.2 |
 | <a name="provider_time"></a> [time](#provider\_time) | >= 0.7 |
 
@@ -476,7 +476,7 @@ module "cdn" {
 | <a name="input_cors_max_age_seconds"></a> [cors\_max\_age\_seconds](#input\_cors\_max\_age\_seconds) | Time in seconds that browser can cache the response for S3 bucket | `number` | `3600` | no |
 | <a name="input_custom_error_response"></a> [custom\_error\_response](#input\_custom\_error\_response) | List of one or more custom error response element maps | <pre>list(object({<br/>    error_caching_min_ttl = optional(number, null)<br/>    error_code            = string<br/>    response_code         = optional(number, null)<br/>    response_page_path    = optional(string, null)<br/>  }))</pre> | `[]` | no |
 | <a name="input_custom_origin_headers"></a> [custom\_origin\_headers](#input\_custom\_origin\_headers) | A list of origin header parameters that will be sent to origin | `list(object({ name = string, value = string }))` | `[]` | no |
-| <a name="input_custom_origins"></a> [custom\_origins](#input\_custom\_origins) | A list of additional custom website [origins](https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#origin-arguments) for this distribution.<br/>The `origin_access_control_id` field specifies the Origin Access Control configuration to use for this origin.<br/>This is used to configure secure access between CloudFront and the origin. | <pre>list(object({<br/>    domain_name              = string<br/>    origin_id                = string<br/>    origin_path              = optional(string, "")<br/>    origin_access_control_id = optional(string, null)<br/>    custom_headers = optional(list(object({<br/>      name  = string<br/>      value = string<br/>    })), [])<br/>    custom_origin_config = object({<br/>      http_port                = optional(number, 80)<br/>      https_port               = optional(number, 443)<br/>      origin_protocol_policy   = optional(string, "https-only")<br/>      origin_ssl_protocols     = optional(list(string), ["TLSv1.2"])<br/>      origin_keepalive_timeout = optional(number, 5)<br/>      origin_read_timeout      = optional(number, 30)<br/>    })<br/>    origin_shield = optional(object({<br/>      enabled = optional(bool, false)<br/>      region  = optional(string, null)<br/>    }), null)<br/>  }))</pre> | `[]` | no |
+| <a name="input_custom_origins"></a> [custom\_origins](#input\_custom\_origins) | A list of additional custom website [origins](https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#origin-arguments) for this distribution.<br/>The `origin_access_control_id` field specifies the Origin Access Control configuration to use for this origin.<br/>This is used to configure secure access between CloudFront and the origin. | <pre>list(object({<br/>    domain_name                        = string<br/>    origin_id                          = string<br/>    origin_path                        = optional(string, "")<br/>    origin_access_control_id           = optional(string, null)<br/>    origin_response_completion_timeout = optional(number, 0)<br/>    custom_headers = optional(list(object({<br/>      name  = string<br/>      value = string<br/>    })), [])<br/>    custom_origin_config = object({<br/>      http_port                = optional(number, 80)<br/>      https_port               = optional(number, 443)<br/>      origin_protocol_policy   = optional(string, "https-only")<br/>      origin_ssl_protocols     = optional(list(string), ["TLSv1.2"])<br/>      origin_keepalive_timeout = optional(number, 5)<br/>      origin_read_timeout      = optional(number, 30)<br/>    })<br/>    origin_shield = optional(object({<br/>      enabled = optional(bool, false)<br/>      region  = optional(string, null)<br/>    }), null)<br/>  }))</pre> | `[]` | no |
 | <a name="input_default_root_object"></a> [default\_root\_object](#input\_default\_root\_object) | Object that CloudFront return when requests the root URL | `string` | `"index.html"` | no |
 | <a name="input_default_ttl"></a> [default\_ttl](#input\_default\_ttl) | Default amount of time (in seconds) that an object is in a CloudFront cache | `number` | `60` | no |
 | <a name="input_delimiter"></a> [delimiter](#input\_delimiter) | Delimiter to be used between ID elements.<br/>Defaults to `-` (hyphen). Set to `""` to use no delimiter at all. | `string` | `null` | no |
@@ -531,6 +531,7 @@ module "cdn" {
 | <a name="input_origin_path"></a> [origin\_path](#input\_origin\_path) | An optional element that causes CloudFront to request your content from a directory in your Amazon S3 bucket or your custom origin. It must begin with a /. Do not add a / at the end of the path. | `string` | `""` | no |
 | <a name="input_origin_read_timeout"></a> [origin\_read\_timeout](#input\_origin\_read\_timeout) | The Custom Read timeout, in seconds. By default, AWS enforces a limit of 60. But you can request an increase. | `number` | `30` | no |
 | <a name="input_origin_request_policy_id"></a> [origin\_request\_policy\_id](#input\_origin\_request\_policy\_id) | The unique identifier of the origin request policy that is attached to the behavior.<br/>Should be used in conjunction with `cache_policy_id`. | `string` | `null` | no |
+| <a name="input_origin_response_completion_timeout"></a> [origin\_response\_completion\_timeout](#input\_origin\_response\_completion\_timeout) | Time (in seconds) that a request from CloudFront to the origin can stay open and wait for a response. Must be integer greater than or equal to the value of origin\_read\_timeout. If omitted or explicitly set to 0, no maximum value is enforced. | `number` | `0` | no |
 | <a name="input_origin_shield_enabled"></a> [origin\_shield\_enabled](#input\_origin\_shield\_enabled) | If enabled, origin shield will be enabled for the default origin | `bool` | `false` | no |
 | <a name="input_origin_ssl_protocols"></a> [origin\_ssl\_protocols](#input\_origin\_ssl\_protocols) | The SSL/TLS protocols that you want CloudFront to use when communicating with your origin over HTTPS. | `list(string)` | <pre>[<br/>  "TLSv1",<br/>  "TLSv1.1",<br/>  "TLSv1.2"<br/>]</pre> | no |
 | <a name="input_override_origin_bucket_policy"></a> [override\_origin\_bucket\_policy](#input\_override\_origin\_bucket\_policy) | When using an existing origin bucket (through var.origin\_bucket), setting this to 'false' will make it so the existing bucket policy will not be overriden | `bool` | `true` | no |
@@ -547,7 +548,7 @@ module "cdn" {
 | <a name="input_s3_access_log_prefix"></a> [s3\_access\_log\_prefix](#input\_s3\_access\_log\_prefix) | Prefix to use for S3 Access Log object keys. Defaults to `logs/${module.this.id}` | `string` | `""` | no |
 | <a name="input_s3_access_logging_enabled"></a> [s3\_access\_logging\_enabled](#input\_s3\_access\_logging\_enabled) | Set `true` to deliver S3 Access Logs to the `s3_access_log_bucket_name` bucket.<br/>Defaults to `false` if `s3_access_log_bucket_name` is empty (the default), `true` otherwise.<br/>Must be set explicitly if the access log bucket is being created at the same time as this module is being invoked. | `bool` | `null` | no |
 | <a name="input_s3_object_ownership"></a> [s3\_object\_ownership](#input\_s3\_object\_ownership) | Specifies the S3 object ownership control on the origin bucket. Valid values are `ObjectWriter`, `BucketOwnerPreferred`, and 'BucketOwnerEnforced'. | `string` | `"ObjectWriter"` | no |
-| <a name="input_s3_origins"></a> [s3\_origins](#input\_s3\_origins) | A list of S3 [origins](https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#origin-arguments) (in addition to the one created by this module) for this distribution.<br/>S3 buckets configured as websites are `custom_origins`, not `s3_origins`.<br/>Specifying `s3_origin_config.origin_access_identity` as `null` or `""` will have it translated to the `origin_access_identity` used by the origin created by the module. | <pre>list(object({<br/>    domain_name              = string<br/>    origin_id                = string<br/>    origin_path              = optional(string, "")<br/>    origin_access_control_id = optional(string, null)<br/>    s3_origin_config = optional(object({<br/>      origin_access_identity = string<br/>    }), null)<br/>    origin_shield_enabled = optional(bool, false)<br/>  }))</pre> | `[]` | no |
+| <a name="input_s3_origins"></a> [s3\_origins](#input\_s3\_origins) | A list of S3 [origins](https://www.terraform.io/docs/providers/aws/r/cloudfront_distribution.html#origin-arguments) (in addition to the one created by this module) for this distribution.<br/>S3 buckets configured as websites are `custom_origins`, not `s3_origins`.<br/>Specifying `s3_origin_config.origin_access_identity` as `null` or `""` will have it translated to the `origin_access_identity` used by the origin created by the module. | <pre>list(object({<br/>    domain_name                        = string<br/>    origin_id                          = string<br/>    origin_path                        = optional(string, "")<br/>    origin_access_control_id           = optional(string, null)<br/>    origin_response_completion_timeout = optional(number, 0)<br/>    s3_origin_config = optional(object({<br/>      origin_access_identity = string<br/>    }), null)<br/>    origin_shield_enabled = optional(bool, false)<br/>  }))</pre> | `[]` | no |
 | <a name="input_s3_website_password_enabled"></a> [s3\_website\_password\_enabled](#input\_s3\_website\_password\_enabled) | If set to true, and `website_enabled` is also true, a password will be required in the `Referrer` field of the<br/>HTTP request in order to access the website, and Cloudfront will be configured to pass this password in its requests.<br/>This will make it much harder for people to bypass Cloudfront and access the S3 website directly via its website endpoint. | `bool` | `false` | no |
 | <a name="input_stage"></a> [stage](#input\_stage) | ID element. Usually used to indicate role, e.g. 'prod', 'staging', 'source', 'build', 'test', 'deploy', 'release' | `string` | `null` | no |
 | <a name="input_tags"></a> [tags](#input\_tags) | Additional tags (e.g. `{'BusinessUnit': 'XYZ'}`).<br/>Neither the tag keys nor the tag values will be modified by this module. | `map(string)` | `{}` | no |
@@ -678,15 +679,15 @@ Setup dependencies:
 
 To run tests:
 
-- Run all tests:
+- Run all tests:  
   ```sh
   atmos test run
   ```
-- Clean up test artifacts:
+- Clean up test artifacts:  
   ```sh
   atmos test clean
   ```
-- Explore additional test options:
+- Explore additional test options:  
   ```sh
   atmos test --help
   ```
@@ -744,7 +745,7 @@ All other trademarks referenced herein are the property of their respective owne
 
 
 ---
-Copyright © 2017-2025 [Cloud Posse, LLC](https://cpco.io/copyright)
+Copyright © 2017-2026 [Cloud Posse, LLC](https://cpco.io/copyright)
 
 
 <a href="https://cloudposse.com/readme/footer/link?utm_source=github&utm_medium=readme&utm_campaign=cloudposse/terraform-aws-cloudfront-s3-cdn&utm_content=readme_footer_link"><img alt="README footer" src="https://cloudposse.com/readme/footer/img"/></a>
